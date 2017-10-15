@@ -2,7 +2,7 @@
 
 ###### REQUIREMENTS
 
-The code was tested with Python 2.7.12, Tensorflow 1.0.1 and Keras 1.2.2.
+The code was tested with Python 2.7.13, Tensorflow 1.1.0 and Keras 2.0.5. You also need install tqdm 4.15.0
 
 ###### EXPERIMENTS
 We start by training a black-box GTSRB model as targeted model to attack.
