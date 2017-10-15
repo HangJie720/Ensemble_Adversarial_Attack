@@ -1,69 +1,40 @@
-# Ensemble Adversarial Training
-
-This repository contains code to reproduce results from the paper:
-
-**Ensemble Adversarial Training: Attacks and Defenses** <br>
-*Florian Tramèr, Alexey Kurakin, Nicolas Papernot, Dan Boneh and Patrick McDaniel* <br>
-ArXiv report: https://arxiv.org/abs/1705.07204
-
-<br>
+# Ensemble Adversarial Attack Against Black-Box System Trained by MNIST Dataset
 
 ###### REQUIREMENTS
 
 The code was tested with Python 2.7.12, Tensorflow 1.0.1 and Keras 1.2.2.
 
 ###### EXPERIMENTS
-
-We start by training a few simple MNIST models. These are described in _mnist.py_.
+We start by training a black-box MNIST model as targeted model to attack.
+```
+ python -m train models/modelA --type=0 --epochs=30
+```
+Then we require to train a few simple substitue models used to generate transferable adversarial samples with synthetic inputs by jacobian-based dataset augmentation technique. These are described in _mnist.py_.
 
 ```
-python -m train models/modelA --type=0
-python -m train models/modelB --type=1
-python -m train models/modelC --type=2
-python -m train models/modelD --type=3
-```
-
-Then, we can use (standard) Adversarial Training or Ensemble Adversarial Training 
-(we train for either 6 or 12 epochs in the paper). With Ensemble Adversarial 
-Training, we additionally augment the training data with adversarial examples 
-crafted from external pre-trained models (models A, C and D here):
+python -m train models/model_sub_1 --type=1 --epochs=30
+python -m train models/model_sub_2 --type=2 --epochs=30
+python -m train models/model_sub_3 --type=3 --epochs=30
+python -m train models/model_sub_4 --type=4 --epochs=30
+python -m train models/model_sub_5 --type=5 --epochs=30
+python -m train models/model_sub_6 --type=6 --epochs=30
+python -m train models/model_sub_7 --epochs=30  # Select cleverhans.utils_keras substitute() as substitute
+python -m train models/model_sub_8 --epochs=30  # Select cleverhans.utils_keras cnn_model() as substitute
 
 ```
-python -m train_adv models/modelA_adv --type=0 --epochs=12
-python -m train_adv models/modelA_ens models/modelA models/modelC models/modelD --type=0 --epochs=12
-```
-
-The accuracy of the models on the MNIST test set can be computed using
+When you complete substite and black-box target model training, you can make a test to verify the accuracy of trained models.
 
 ```
 python -m simple_eval test [model(s)]
 ```
 
-To evaluate robustness to various attacks, we use
+Afterwards, we can use pre-trained substiutes to craft transferable adversarial samples to attack black-box target model to evaluate transferability and robustness to various attacks, we use
 
 ```
-python -m simple_eval [attack] [source_model] [target_model(s)] [--parameters (opt)]
+python -m simple_eval [attack] [source_model] [target_model(s)] [--parameters(opt)]
 ```
+If you select ensemble-based approach to complete black-box attack, you need specify multiple substitutes ensembling to generate transferable adversarial samples. Now, we only consider Gradient-based Ensemble, we will consider Optimization-based Ensemble later.
 
-The attack can be: 
-
-| Attack | Description | Parameters |
-| ------ | ----------- | ---------- |
-| fgs    | Standard FGSM | *eps* (the norm of the perturbation) |
-|rand_fgs| Our FGSM variant that prepends the gradient computation by a random step | *eps* (the norm of the total perturbation); *alpha* (the norm of the random perturbation) |
-| ifgs   | The iterative FGSM | *eps* (the norm of the perturbation); *steps* (the number of iterative FGSM steps) |
-| CW  | The Carlini and Wagner attack | *eps* (the norm of the perturbation); *kappa* (attack confidence) |
-
-Note that due to GPU non-determinism, the obtained results may vary by a few 
-percent compared to those reported in the paper.
-Nevertheless, we consistently observe the following:
-
-* Standard Adversarial Training performs worse on transferred FGSM 
-  examples than on a "direct" FGSM attack on the model due to a *gradient masking* effect.
-* Our RAND+FGSM attack outperforms the FGSM when applied to any model. The gap 
-  is particularly pronounced for the adversarially trained model.
-* Ensemble Adversarial Training is more robust than (standard) adversarial 
-  training to transferred examples computed using any of the attacks above.
 
 ###### CONTACT
-Questions and suggestions can be sent to tramer@cs.stanford.edu 
+Questions and suggestions can be sent to 1216043136@njupt.edu.cn
