@@ -408,7 +408,7 @@ def jacobian_augmentation(sess, x, X_sub_prev, Y_sub, grads, lmbda,
         grad = grads[Y_sub[ind]]
 
         # Prepare feeding dictionary
-        feed_dict = {x: np.reshape(input, input_shape)}
+        feed_dict = {x: np.reshape(input, input_shape), K.learning_phase(): 1}
 
         # Compute sign matrix
         grad_val = sess.run([tf.sign(grad)], feed_dict=feed_dict)[0]
