@@ -12,14 +12,14 @@ We start by training a black-box GTSRB model as targeted model to attack.
 Then we require to train a few simple substitue models used to generate transferable adversarial samples with synthetic inputs by jacobian-based dataset augmentation technique. These are described in _mnist.py_.
 
 ```
-python -m train models/model_sub_1 --type=1 --epochs=30
-python -m train models/model_sub_2 --type=2 --epochs=30
-python -m train models/model_sub_3 --type=3 --epochs=30
-python -m train models/model_sub_4 --type=4 --epochs=30
-python -m train models/model_sub_5 --type=5 --epochs=30
-python -m train models/model_sub_6 --type=6 --epochs=30
-python -m train models/model_sub_7 --epochs=30  # Select cleverhans.utils_keras substitute() as substitute
-python -m train models/model_sub_8 --epochs=30  # Select cleverhans.utils_keras cnn_model() as substitute
+python -m train_sub models/model_sub_1 --type=1 --epochs=30
+python -m train_sub models/model_sub_2 --type=2 --epochs=30
+python -m train_sub models/model_sub_3 --type=3 --epochs=30
+python -m train_sub models/model_sub_4 --type=4 --epochs=30
+python -m train_sub models/model_sub_5 --type=5 --epochs=30
+python -m train_sub models/model_sub_6 --type=6 --epochs=30
+python -m train_sub models/model_sub_7 --epochs=30  # Select cleverhans.utils_keras substitute() as substitute
+python -m train_sub models/model_sub_8 --epochs=30  # Select cleverhans.utils_keras cnn_model() as substitute
 
 ```
 When you complete substite and black-box target model training, you can make a test to verify the accuracy of trained models.
