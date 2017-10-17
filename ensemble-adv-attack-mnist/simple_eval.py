@@ -90,13 +90,13 @@ def main(attack, src_model_name, target_model_names):
 
         return
 
-    if attack == "grad_ens":
+        if attack == "cascade_ensemble":
         X_test = np.clip(
             X_test + args.alpha * np.sign(np.random.randn(*X_test.shape)),
             0.0, 1.0)
         eps -= args.alpha
 
-        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3, sub_model_4, sub_model_5)
+        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3, sub_model_4, sub_model_5, sub_model_6, sub_model_7)
         sub_models = [None] * len(sub_model_ens)
         for i in range(len(sub_model_ens)):
             sub_models[i] = load_model(sub_model_ens[i])
@@ -107,6 +107,41 @@ def main(attack, src_model_name, target_model_names):
                 logits = m(adv_x)
                 gradient = gen_grad(adv_x, logits, y)
                 adv_x = symbolic_fgs(adv_x, gradient, eps=args.eps / args.steps, clipping=True)
+
+    if attack == "parallel_ensemble":
+        X_test = np.clip(
+            X_test + args.alpha * np.sign(np.random.randn(*X_test.shape)),
+            0.0, 1.0)
+        eps -= args.alpha
+
+        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3)
+        sub_models = [None] * len(sub_model_ens)
+
+        for i in range(len(sub_model_ens)):
+            sub_models[i] = load_model(sub_model_ens[i])
+
+        x_advs = [([None] * len(sub_models)) for i in range(args.steps)]
+        print x_advs
+
+        x_adv = x
+        for j in range(args.steps):
+            for i, m in enumerate(sub_models):
+                logits = m(x_adv)
+                gradient = gen_grad(x_adv, logits, y)
+                x_adv = symbolic_fgs(x_adv, gradient, eps=args.eps / args.steps, clipping=True)
+                x_advs[j][i] = x_adv
+
+        print x_advs
+        adv_x_mean = x_advs[0][0]
+        for j in range(args.steps):
+            for i in range(len(sub_models)):
+                if j==0 and i==0:continue
+                adv_x_mean = adv_x_mean + x_advs[j][i]
+        xadv  = adv_x_mean / (args.steps * len(sub_models))
+        preds = src_model(xadv)
+        grads = gen_grad(xadv, preds, y)
+        adv_x = symbolic_fgs(xadv, grads, eps = args.eps, clipping=True)
+
 
 
     # compute the adversarial examples and evaluate
@@ -132,7 +167,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("attack", help="name of attack",
-                        choices=["test", "fgs", "ifgs", "rand_fgs", "CW", "grad_ens"])
+                        choices=["test", "fgs", "ifgs", "rand_fgs", "CW", "cascade_ensemble","parallel_ensemble"])
     parser.add_argument("src_model", help="source model for attack")
     parser.add_argument('target_models', nargs='*',
                         help='path to target model(s)')
