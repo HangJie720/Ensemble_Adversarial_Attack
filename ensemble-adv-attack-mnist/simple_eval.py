@@ -90,7 +90,7 @@ def main(attack, src_model_name, target_model_names):
 
         return
 
-        if attack == "cascade_ensemble":
+    if attack == "cascade_ensemble":
         X_test = np.clip(
             X_test + args.alpha * np.sign(np.random.randn(*X_test.shape)),
             0.0, 1.0)
@@ -142,8 +142,6 @@ def main(attack, src_model_name, target_model_names):
         grads = gen_grad(xadv, preds, y)
         adv_x = symbolic_fgs(xadv, grads, eps = args.eps, clipping=True)
 
-
-
     # compute the adversarial examples and evaluate
     X_adv = batch_eval([x, y], [adv_x], [X_test, Y_test])[0]
 
@@ -164,14 +162,16 @@ if __name__ == "__main__":
     sub_model_3 = os.path.join(SAVE_PATH, "model_sub_3")
     sub_model_4 = os.path.join(SAVE_PATH, "model_sub_4")
     sub_model_5 = os.path.join(SAVE_PATH, "model_sub_5")
+    sub_model_6 = os.path.join(SAVE_PATH, "model_sub_6")
+    sub_model_7 = os.path.join(SAVE_PATH, "model_sub_7")
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("attack", help="name of attack",
-                        choices=["test", "fgs", "ifgs", "rand_fgs", "CW", "cascade_ensemble","parallel_ensemble"])
+                        choices=["test", "fgs", "ifgs", "rand_fgs", "CW", "cascade_ensemble", "parallel_ensemble"])
     parser.add_argument("src_model", help="source model for attack")
     parser.add_argument('target_models', nargs='*',
                         help='path to target model(s)')
-    parser.add_argument("--eps", type=float, default=0.3,
+    parser.add_argument("--eps", type=float, default=1.0,
                         help="FGS attack scale")
     parser.add_argument("--alpha", type=float, default=0.05,
                         help="RAND+FGSM random perturbation scale")
