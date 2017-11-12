@@ -1,4 +1,4 @@
-# Ensemble Adversarial Attack Against Black-Box System Trained by MNIST Dataset
+# Ensemble Adversarial Black-Box Attacks Against Deep Learning System Trained by MNIST Dataset
 
 ###### REQUIREMENTS
 
