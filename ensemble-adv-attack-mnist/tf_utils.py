@@ -180,7 +180,8 @@ def tf_compute_C(model, x, y, X_test, y_test):
     """
     assert len(X_test) == len(y_test)
 
-    predictions = K.softmax(model(x))
+    eval_prediction = K.softmax(model(x))
+    predictions = batch_eval([x], [eval_prediction], [X_test])[0]
     correct_preds = tf.cast(tf.equal(tf.argmax(y, axis=-1),tf.argmax(predictions, axis=-1)), dtype=tf.int32)
 
     with tf.Session() as sess:
