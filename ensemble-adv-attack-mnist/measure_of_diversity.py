@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 from mnist import set_mnist_flags, load_model
-from tf_utils import tf_test_acc_rate, batch_eval, tf_test_acc_num
+from tf_utils import tf_test_acc_rate, batch_eval, tf_test_acc_num, tf_compute_C
 from cleverhans.utils_mnist import data_mnist
 from cleverhans.utils import display_leg_sample
 from os.path import basename
@@ -26,7 +26,7 @@ def main(measures, src_model_names):
 
     y = K.placeholder((None, FLAGS.NUM_CLASSES))
 
-    _, _, X_test, Y_test = data_mnist()
+    X_train, Y_train, X_test, Y_test = data_mnist()
 
     # source model for crafting adversarial examples
     src_models = [None] * len(src_model_names)
@@ -35,24 +35,73 @@ def main(measures, src_model_names):
         src_models[i] = load_model(src_model_names[i])
 
     if measures == "Q":
-        for (name, src_model) in zip(src_model_names, src_models):
-            acc = tf_test_acc_rate(src_model, x, X_test, Y_test)
-            # print '{}: {:.3f}'.format(basename(name), acc)
-            for i in range(len(src_model_names)):
-                accuracy[i] = acc
+        X_test = X_test[0:100]
+        Y_test = Y_test[0:100]
+        N = len(X_test)
+        k = len(src_model_names)
+        Qij = [([None] * k) for p in range(k)]
+        for i in range(k - 1):
+            for j in range(i + 1, k):
+                a = b = c = d = 0.0
+                for n in range(N):
+                    src_model_i = src_models[i]
+                    src_model_j = src_models[j]
+                    Ci = tf_compute_C(src_model_i, x, y, X_test[n:n + 1], Y_test[n:n + 1])
+                    Cj = tf_compute_C(src_model_j, x, y, X_test[n:n + 1], Y_test[n:n + 1])
+                    if (Ci[0] == 1 & Cj[0] == 1):
+                        a += 1
+                    elif (Ci[0] == 0 & Cj[0] == 0):
+                        d += 1
+                    elif (Ci[0] == 0 & Cj[0] == 1):
+                        c += 1
+                    elif (Ci[0] == 1 & Cj[0] == 0):
+                        b += 1
+                print a,b,c,d
+                Qij[i][j] = (a * d - b * c) / (a * d + b * c)
+
+        Qij_SUM = 0.0
+        for i in range(k-1):
+            for j in range(i+1,k):
+                Qij_SUM += Qij[i][j]
+        QAV = (2.0/(k*(k-1))) * Qij_SUM
+        print('The value of the Q statistic: %.4f' %(QAV))
         return
 
     if measures == "p":
-        for (name, src_model) in zip(src_model_names, src_models):
-            acc = tf_test_acc_rate(src_model, x, X_test, Y_test)
-            # print '{}: {:.3f}'.format(basename(name), acc)
-            for i in range(len(src_model_names)):
-                accuracy[i] = acc
-        return
+        X_test = X_test[0:100]
+        Y_test = Y_test[0:100]
+        N = len(X_test)
+        k = len(src_model_names)
+        Pij = [([None] * k) for p in range(k)]
+        for i in range(k - 1):
+            for j in range(i + 1, k):
+                a = b = c = d = 0.0
+                for n in range(N):
+                    src_model_i = src_models[i]
+                    src_model_j = src_models[j]
+                    Ci = tf_compute_C(src_model_i, x, y, X_test[n:n + 1], Y_test[n:n + 1])
+                    Cj = tf_compute_C(src_model_j, x, y, X_test[n:n + 1], Y_test[n:n + 1])
+                    if (Ci[0] == 1 & Cj[0] == 1):
+                        a += 1
+                    elif (Ci[0] == 0 & Cj[0] == 0):
+                        d += 1
+                    elif (Ci[0] == 0 & Cj[0] == 1):
+                        c += 1
+                    elif (Ci[0] == 1 & Cj[0] == 0):
+                        b += 1
+                print a, b, c, d
+                Pij[i][j] = (a * d - b * c) / math.sqrt((a+b)*(a+c)*(b+d)*(d+c))
 
+        Pij_SUM = 0.0
+        for i in range(k - 1):
+            for j in range(i + 1, k):
+                Pij_SUM += Pij[i][j]
+        PAV = (2.0 / (k * (k - 1))) * Pij_SUM
+        print('The value of the correlation coefficient: %.4f' % (PAV))
+        return
     if measures == "Ent":
-        X_test = X_test[0:1000]
-        Y_test = Y_test[0:1000]
+        X_test = X_test[0:100]
+        Y_test = Y_test[0:100]
         k = len(src_model_names)
         N = len(X_test)
         num = 0
@@ -65,13 +114,13 @@ def main(measures, src_model_names):
                 lxt += C[0]  # lxt= 0,1,2,3
             m = min(lxt, k - lxt)
             num += ((1.0/(k - math.ceil(k/2.0))) * m)
-        KW = (1.0 / N) * num
-        print('The value of the Kohavi-Wolpert variance:' + str(KW))
+        Ent = (1.0 / N) * num
+        print('The value of the entropy measure: %.4f' %(Ent))
         return
 
     if measures == "KW":
-        X_test = X_test[0:1000]
-        Y_test = Y_test[0:1000]
+        X_test = X_test[0:100]
+        Y_test = Y_test[0:100]
         k = len(src_model_names)
         N = len(X_test)
         num = 0
@@ -84,7 +133,7 @@ def main(measures, src_model_names):
                 lxt += C[0] # lxt= 0,1,2,3
             num += (lxt * (k - lxt))
         KW = (1.0/(N * math.pow(k,2))) * num
-        print('The value of the Kohavi-Wolpert variance:' + str(KW))
+        print('The value of the Kohavi-Wolpert variance: %.4f' % (KW))
         return
 
 
@@ -115,7 +164,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("measures", help="measures of diversity",
-                        choices=["Q","p","E","KW","test"])
+                        choices=["Q","p","Ent","KW","test"])
     parser.add_argument('src_models', nargs='*',
                         help='path to source model(s)')
 
