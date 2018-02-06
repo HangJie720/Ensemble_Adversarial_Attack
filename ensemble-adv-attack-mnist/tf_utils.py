@@ -6,6 +6,7 @@ from attack_utils import gen_adv_loss
 
 import time
 import sys
+import keras
 
 FLAGS = flags.FLAGS
 EVAL_FREQUENCY = 100
@@ -149,3 +150,80 @@ def error_rate(predictions, labels):
     assert len(predictions) == len(labels)
 
     return 100.0 - (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1)) / predictions.shape[0])
+
+def tf_test_acc_rate(model, x, X_test, y_test):
+    """
+    Compute test error.
+    """
+    assert len(X_test) == len(y_test)
+
+    # Predictions for the test set
+    eval_prediction = K.softmax(model(x))
+
+    predictions = batch_eval([x], [eval_prediction], [X_test])[0]
+
+    return acc_rate(predictions, y_test)
+
+
+def acc_rate(predictions, labels):
+    """
+    Return the error rate in percent.
+    """
+
+    assert len(predictions) == len(labels)
+
+    return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1)) / predictions.shape[0])
+
+def tf_compute_C(model, x, y, X_test, y_test):
+    """
+    Return the number of substitutes that accurately classify each sample x.
+    """
+    assert len(X_test) == len(y_test)
+
+    predictions = K.softmax(model(x))
+    correct_preds = tf.cast(tf.equal(tf.argmax(y, axis=-1),tf.argmax(predictions, axis=-1)), dtype=tf.int32)
+
+    with tf.Session() as sess:
+        init = tf.global_variables_initializer()
+        sess.run(init)
+        feed_dict = {x: X_test, y: y_test, K.learning_phase():1}
+        C = sess.run(correct_preds, feed_dict=feed_dict)
+    return C
+def tf_test_acc_num(model, x, y, X_test, y_test):
+    """
+    Compute test error.
+    """
+    assert len(X_test) == len(y_test)
+
+    # # Create TF session and set as Keras backend session
+    sess = tf.Session()
+    keras.backend.set_session(sess)
+
+    # sess.run(tf.global_variables_initializer())
+    # eval_prediction = K.softmax(model(x))
+    #
+    # predictions = batch_eval([x], [eval_prediction], [X_test])[0]
+    # # Predictions for the test set
+    prediction = model(x)
+    correct_prediction = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
+
+    print sess.run(tf.argmax(prediction, 1), feed_dict={x:X_test})
+    print sess.run(tf.argmax(y, 1), feed_dict={y:y_test})
+    accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+    prediction = sess.run(correct_prediction, feed_dict={x: X_test, y: y_test})
+    accuracy = sess.run(accuracy_operation, feed_dict={x: X_test, y: y_test})
+    print prediction
+    print accuracy
+    return accuracy
+
+def acc_num(predictions, labels):
+    """
+    Return the error rate in percent.
+    """
+    num = 0
+    assert len(predictions) == len(labels)
+    if np.argmax(predictions, 1) == np.argmax(labels, 1):
+        num = num + 1
+    print num
+    return num
