@@ -50,29 +50,41 @@ def main(measures, src_model_names):
                 accuracy[i] = acc
         return
 
-    if measures == "E":
-        lx = 0
-        min_sum = 0
+    if measures == "Ent":
+        X_test = X_test[0:1000]
+        Y_test = Y_test[0:1000]
+        k = len(src_model_names)
         N = len(X_test)
-        L = len(src_model_names)
-
-        for j in range(N):
-
+        num = 0
+        for i in range(N):
+            lxt = 0
+            print i
             for (name, src_model) in zip(src_model_names, src_models):
-                # the number of substitutes from D that correctly recognize X_test[j]
-                lx = lx + tf_test_acc_num(src_model, x, y, X_test[j], Y_test[j])
-
-            min_sum = min_sum + (1.0/(L - math.ceil(L/2.0)))* min(lx, L-lx)
-        Ent = (1.0/N) * min_sum
-        print('The value of the entropy measures: {:.3f}'.format(Ent))
+                C = tf_compute_C(src_model, x, y, X_test[i:i + 1], Y_test[i:i + 1])
+                # lxt denote the number of substitutes that accurately recognize sample x.
+                lxt += C[0]  # lxt= 0,1,2,3
+            m = min(lxt, k - lxt)
+            num += ((1.0/(k - math.ceil(k/2.0))) * m)
+        KW = (1.0 / N) * num
+        print('The value of the Kohavi-Wolpert variance:' + str(KW))
         return
 
     if measures == "KW":
-        for (name, src_model) in zip(src_model_names, src_models):
-            acc = tf_test_acc_rate(src_model, x, X_test, Y_test)
-            # print '{}: {:.3f}'.format(basename(name), acc)
-            for i in range(len(src_model_names)):
-                accuracy[i] = acc
+        X_test = X_test[0:1000]
+        Y_test = Y_test[0:1000]
+        k = len(src_model_names)
+        N = len(X_test)
+        num = 0
+        for i in range(N):
+            lxt = 0
+            print i
+            for (name, src_model) in zip(src_model_names, src_models):
+                C = tf_compute_C(src_model, x, y, X_test[i:i+1], Y_test[i:i+1])
+                # lxt denote the number of substitutes that accurately recognize sample x.
+                lxt += C[0] # lxt= 0,1,2,3
+            num += (lxt * (k - lxt))
+        KW = (1.0/(N * math.pow(k,2))) * num
+        print('The value of the Kohavi-Wolpert variance:' + str(KW))
         return
 
 
