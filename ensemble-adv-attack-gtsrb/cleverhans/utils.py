@@ -6,7 +6,10 @@ from __future__ import unicode_literals
 import numpy as np
 from six.moves import xrange
 import warnings
-
+import matplotlib.pyplot as plt
+import random
+import scipy
+import os
 known_number_types = (int, float, np.float16, np.float32, np.float64,
                       np.int8, np.int16, np.int32, np.int32, np.int64,
                       np.uint8, np.uint16, np.uint32, np.uint64)
@@ -215,6 +218,114 @@ def grid_visual(data):
     plt.show()
     return figure
 
+def display_leg_sample(X_test):
+    """
+        Display the testing sample and adversarial sample visually.
+        :param sess: the TF session.
+        :param X_test: the testing data for the oracle.
+        :param Y_adv: the adversarial data for the oracle.
+        :param preds: model output predictions label.
+        :return:
+    """
+    # X_test_redu = (0.5 + tf.reshape(X_test, ((X_test.shape[0], 32, 32, 3)))) * 255
+    # X_train, y_train, X_test1, y_test = ld.load_data(train_data_dir, test_data_dir)
+    # X_test_redu = reduction_batch(X_test)
+    # X_adv_redu = reduction_batch(X_adv)
+
+    # Pick 10 random images
+
+    sample_indexes = random.sample(range(len(X_test)), 10)
+    legitimate_sample = [X_test[i] for i in sample_indexes]
+    f, axarr = plt.subplots(1, 10)
+    for j in range(10):
+        axarr[0, j].imshow(np.reshape(legitimate_sample[j],(32,32)),cmap='gray')
+        plt.pause(0.01)
+    plt.show()
+
+def display_leg_adv_sample(X_test, X_adv):
+    """
+        Display the testing sample and adversarial sample visually.
+        :param sess: the TF session.
+        :param X_test: the testing data for the oracle.
+        :param Y_adv: the adversarial data for the oracle.
+        :param preds: model output predictions label.
+        :return:
+    """
+    # X_test_redu = (0.5 + tf.reshape(X_test, ((X_test.shape[0], 32, 32, 3)))) * 255
+    # X_train, y_train, X_test1, y_test = ld.load_data(train_data_dir, test_data_dir)
+    # X_test_redu = reduction_batch(X_test)
+    # X_adv_redu = reduction_batch(X_adv)
+
+    # Pick 6 random images
+
+    sample_indexes = random.sample(range(len(X_test)), 10)
+
+    legitimate_sample = [X_test[i] for i in sample_indexes]
+    adversarial_sample = [X_adv[i] for i in sample_indexes]
+    f, axarr = plt.subplots(3, 10)
+    for j in range(10):
+        axarr[0, j].imshow(np.reshape(legitimate_sample[j],(32,32)))
+        axarr[1, j].imshow(np.reshape(adversarial_sample[j],(32,32)))
+        axarr[2, j].imshow(np.reshape(adversarial_sample[j]-legitimate_sample[j],(32,32)))
+        # plt.setp(axarr[0, j].get_xticklabels(), visible=False)
+        # plt.setp(axarr[1, j].get_yticklabels(), visible=False)
+        plt.pause(0.01)
+    plt.show()
+
+def save_leg_adv_sample(save_dir, X_test, X_adv):
+    if os.path.exists(save_dir) is False:
+        os.makedirs(save_dir)
+
+    sample_indexes = random.sample(range(len(X_test)), 10)
+
+    legitimate_sample = [X_test[i] for i in sample_indexes]
+    adversarial_sample = [X_adv[i] for i in sample_indexes]
+    for j in range(10):
+        image_array = legitimate_sample[j]
+        image_array = image_array.reshape(28, 28)
+        filename = save_dir + 'mnist_test_%d.jpg' % j
+        scipy.misc.toimage(image_array, cmin=0.0, cmax=1.0).save(filename)
+
+    for j in range(10):
+        image_array = adversarial_sample[j]
+        image_array = image_array.reshape(28, 28)
+        filename = save_dir + 'mnist_adv_%d.jpg' % j
+        scipy.misc.toimage(image_array, cmin=0.0, cmax=1.0).save(filename)
+
+    print('Please check: %s ' % save_dir)
+
+
+def save_leg_adv_specified_by_user(save_dir, X_test, X_adv, y_test):
+    if os.path.exists(save_dir) is False:
+        os.makedirs(save_dir)
+
+    for i in range(len(X_test[:200])):
+        if np.argmax(y_test[i]) == 4 and i == 109:
+            image_array_leg = X_test[i]
+            image_array_leg = image_array_leg.reshape(28, 28)
+            filename = save_dir + 'mnist_test_%d_label_4.jpg' % i
+            scipy.misc.toimage(image_array_leg, cmin=0.0, cmax=1.0).save(filename)
+
+            image_array_adv = X_adv[i]
+            image_array_adv = image_array_adv.reshape(28, 28)
+            filename = save_dir + 'mnist_adv_%d_label_4.jpg' % i
+            scipy.misc.toimage(image_array_adv, cmin=0.0, cmax=1.0).save(filename)
+
+    print('please check: %s ' % save_dir)
+
+
+def save_leg_sample(save_dir, X_test):
+    if os.path.exists(save_dir) is False:
+        os.makedirs(save_dir)
+
+    sample_indexes = random.sample(range(len(X_test)), 10)
+
+    legitimate_sample = [X_test[i] for i in sample_indexes]
+    for j in range(10):
+        image_array = legitimate_sample[j]
+        image_array = image_array.reshape(32, 32)
+        filename = save_dir + 'gtsrb_test_%d.jpg' % j
+        scipy.misc.toimage(image_array, cmin=0.0, cmax=1.0).save(filename)
 
 def conv_2d(*args, **kwargs):
     from cleverhans.utils_keras import conv_2d
