@@ -127,6 +127,16 @@ def tf_train(x, y, model, X_train, Y_train, generator, x_advs=None):
         if step == num_steps:
             break
 
+def tf_test_similarity(src_model, target_model, x, X_test):
+
+    # Predictions for the test set
+    src_model_prediction = K.softmax(src_model(x))
+    target_model_prediction = K.softmax(target_model(x))
+
+    src_model_predictions = batch_eval([x], [src_model_prediction], [X_test])[0]
+    target_model_predictions = batch_eval([x], [target_model_prediction], [X_test])[0]
+
+    return error_rate(src_model_predictions, target_model_predictions)
 
 def tf_test_error_rate(model, x, X_test, y_test):
     """
