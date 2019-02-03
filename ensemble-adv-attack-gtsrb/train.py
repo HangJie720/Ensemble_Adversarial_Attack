@@ -4,9 +4,10 @@ import keras.backend as K
 from keras.models import save_model
 from sklearn.preprocessing import LabelBinarizer
 from keras.preprocessing.image import ImageDataGenerator
-from tf_utils import tf_train, tf_test_error_rate
-from cleverhans.utils_tf import model_train, model_eval
+from tf_utils import tf_train, tf_test_error_rate, tf_test_accuracy_rate
+from cleverhans.utils_tf import model_train, model_eval, model_train_advanced
 import tensorflow as tf
+from tensorflow.python.platform import flags
 from gtsrb import *
 
 FLAGS = flags.FLAGS
@@ -16,16 +17,17 @@ def main(model_name, model_type, data_train_dir, data_test_dir):
     # K.set_learning_phase(1)
     np.random.seed(0)
     assert keras.backend.backend() == "tensorflow"
-    set_mnist_flags()
+    set_gtsrb_flags()
 
     flags.DEFINE_bool('NUM_EPOCHS', args.epochs, 'Number of epochs')
     # Get MNIST test data
-    X_train, Y_train, X_test, Y_test = load_data(data_train_dir, data_test_dir)
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = load_data(data_train_dir, data_test_dir)
 
     # One-hot encode image labels
     label_binarizer = LabelBinarizer()
     Y_train = label_binarizer.fit_transform(Y_train)
     Y_test = label_binarizer.fit_transform(Y_test)
+    Y_val = label_binarizer.fit_transform(Y_val)
 
     x = tf.placeholder(tf.float32, (None, 32, 32, 1))
 
@@ -44,29 +46,34 @@ def main(model_name, model_type, data_train_dir, data_test_dir):
 
     data_gen.fit(X_train)
 
-    model = model_mnist(type=model_type)
+    model = model_gtsrb(type=model_type)
     prediction = model(x)
+
     # Train an GTSRB model
-    # tf_train(x, one_hot_y, model, X_train, Y_train, data_gen)
     train_params = {
         'nb_epochs': args.epochs,
         'batch_size': FLAGS.BATCH_SIZE,
         'learning_rate': 0.001
     }
-    def evaluate_1():
+
+    def evaluate():
         eval_params = {'batch_size': FLAGS.BATCH_SIZE}
-        test_accuracy = model_eval(K.get_session(), x, one_hot_y, prediction, X_test, Y_test, args=eval_params)
-        print('Test accuracy of modelC on legitimate test '
-              'examples: {:.3f}'.format(test_accuracy))
+        val_accuracy = model_eval(K.get_session(), x, one_hot_y, prediction, X_val, Y_val, args=eval_params)
+        print('Validation accuracy of modelA on validation '
+              'examples: {:.3f}'.format(val_accuracy))
 
     def evaluate_2():
-        test_error = tf_test_error_rate(model, x, X_test, Y_test)
-        print('Test error: %.3f%%' % test_error)
+        test_accuracy_rate = tf_test_accuracy_rate(model, x, X_val, Y_val)
+        print('Validation accuracy rate: %.3f%%' % test_accuracy_rate)
 
-    model_train(K.get_session(), x, one_hot_y, model, X_train, Y_train, data_gen, evaluate=evaluate_1, args=train_params)
-    # # Finally print the result!
-    # test_error = tf_test_error_rate(model, x, X_test, Y_test)
-    # print('Test error: %.3f%%' % test_error)
+    model_train_advanced(K.get_session(), x, one_hot_y, model, X_train, Y_train, data_gen, evaluate=evaluate_2,
+                         args=train_params)
+
+    # Finally print the result!
+    test_accuracy_rate = tf_test_accuracy_rate(model, x, X_test, Y_test)
+    print('Test accuracy rate: %.3f%%' % test_accuracy_rate)
+
+    # Save model
     save_model(model, model_name)
     json_string = model.to_json()
     with open(model_name + '.json', 'wr') as f:
