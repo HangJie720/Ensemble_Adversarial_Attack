@@ -7,12 +7,15 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
 from tqdm import tqdm
 from sklearn.utils import shuffle
+from sklearn.model_selection import train_test_split
 import load_data as ld
 from skimage.color import rgb2gray
 import argparse
 import numpy as np
 import keras
 from tensorflow.python.platform import flags
+from cleverhans.utils import save_leg_sample, save_leg_sample_rgb
+
 FLAGS = flags.FLAGS
 
 
@@ -30,12 +33,15 @@ def set_gtsrb_flags():
 
 def preprocess(image):
     image = image.astype(float)
-    return (image-255.0/2)/255.0
+    return (image - 255.0 / 2) / 255.0
+
+
 def preprocess_batch(images):
     imgs = np.copy(images)
     for i in tqdm(range(images.shape[0])):
         imgs[i] = preprocess(images[i])
     return imgs
+
 
 def load_data(train_data_dir, test_data_dir):
     """
@@ -54,12 +60,21 @@ def load_data(train_data_dir, test_data_dir):
 
     # Transfer RGB to gray
     X_train_transfered, X_test_transfered = rgb_convert_grayscale(X_train_norm, X_test_norm)
-    # display_gray(X_train_transfered, X_test_transfered)
+
+    X_train_transfered, X_val_transfered, y_train, y_val = train_test_split(X_train_transfered, y_train, test_size=0.2,
+                                                                            random_state=42)
+
+    print(X_train_transfered.shape, y_train.shape, X_val_transfered.shape, y_val.shape, X_test_transfered.shape, y_test.shape)
+
+    # save_leg_sample('GTSRB/test/', X_test_norm)
+    # save_leg_sample_rgb('GTSRB/test/', X_test)
+
     # Shuffle training data
-    print(X_train_transfered.shape, y_train.shape, X_test_transfered.shape, y_test.shape)
     X_train, y_train = shuffle(X_train_transfered, y_train)
+    X_val, y_val = shuffle(X_val_transfered, y_val)
     X_test, y_test = shuffle(X_test_transfered, y_test)
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_val, y_val, X_test, y_test
+
 
 def rgb_convert_grayscale(X_train, X_test):
     """
@@ -76,6 +91,7 @@ def rgb_convert_grayscale(X_train, X_test):
     test_imgs = test_imgs.reshape(test_imgs.shape[0], test_imgs.shape[1], test_imgs.shape[2], 1)
 
     return train_imgs, test_imgs
+
 
 # blackbox model
 def modelA():
@@ -106,6 +122,7 @@ def modelA():
     model.add(Dense(43, activation='softmax'))
     return model
 
+
 # Sub1
 def modelB():
     model = Sequential()
@@ -128,6 +145,7 @@ def modelB():
     model.add(Dropout(0.5))
     model.add(Dense(FLAGS.NUM_CLASSES))
     return model
+
 
 # Sub2
 def modelC():
@@ -155,6 +173,7 @@ def modelC():
     model.add(Dense(FLAGS.NUM_CLASSES))
     return model
 
+
 # Sub3
 def modelD():
     model = Sequential()
@@ -177,6 +196,7 @@ def modelD():
     model.add(Dropout(0.5))
     model.add(Dense(FLAGS.NUM_CLASSES))
     return model
+
 
 # Sub4
 def modelE():
@@ -201,6 +221,8 @@ def modelE():
     model.add(Dense(200, activation='relu'))
     model.add(Dense(43, activation='softmax'))
     return model
+
+
 # Sub5
 def modelF():
     model = Sequential()
@@ -219,6 +241,7 @@ def modelF():
     model.add(Dense(43))
     return model
 
+
 # sub6
 def modelG():
     model = Sequential()
@@ -228,7 +251,6 @@ def modelG():
                      activation='relu'))
     model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-
 
     model.add(Conv2D(128, (3, 3), padding='same',
                      activation='relu'))
@@ -240,6 +262,7 @@ def modelG():
     model.add(Dense(256, activation='relu'))
     model.add(Dense(10, activation='softmax'))
     return model
+
 
 # Sub7
 def modelH(img_rows=32, img_cols=32, nb_classes=43):
@@ -274,6 +297,7 @@ def modelH(img_rows=32, img_cols=32, nb_classes=43):
 
     return model
 
+
 def model_gtsrb(type=3):
     """
     Defines MNIST model using Keras sequential model
@@ -291,10 +315,9 @@ def data_gen_gtsrb(X_train):
     return datagen
 
 
-def load_model(model_path, type=3):
-
+def load_model(model_path, type=0):
     try:
-        with open(model_path+'.json', 'r') as f:
+        with open(model_path + '.json', 'r') as f:
             json_string = f.read()
             model = model_from_json(json_string)
     except IOError:
