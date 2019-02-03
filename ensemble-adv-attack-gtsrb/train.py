@@ -20,7 +20,7 @@ def main(model_name, model_type, data_train_dir, data_test_dir):
     set_gtsrb_flags()
 
     flags.DEFINE_bool('NUM_EPOCHS', args.epochs, 'Number of epochs')
-    # Get MNIST test data
+    # Get GTSRB test data
     X_train, Y_train, X_val, Y_val, X_test, Y_test = load_data(data_train_dir, data_test_dir)
 
     # One-hot encode image labels
