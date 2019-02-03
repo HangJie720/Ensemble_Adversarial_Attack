@@ -36,7 +36,7 @@ def train_sub(sess, x, y, bbox_preds, X_sub, Y_sub, nb_classes,
     """
     # Define TF model graph (for the black-box model)
     # model_sub = model_mnist(type=model_type)
-    model_sub = load_model(type=model_type)
+    model_sub = model_gtsrb(type=model_type)
     preds_sub = model_sub(x)
     print("Defined TensorFlow model graph for the substitute.")
 
@@ -69,10 +69,12 @@ def train_sub(sess, x, y, bbox_preds, X_sub, Y_sub, nb_classes,
             # only has access to the label (not the probabilities) output
             # by the black-box model
             Y_sub[int(len(X_sub)/2):] = np.argmax(bbox_val, axis=1)
+    np.save('GTSRB/train_sub/X_sub.npy', X_sub)
+    np.save('GTSRB/train_sub/Y_sub.npy', Y_sub)
 
     return model_sub, preds_sub
 
-def main(model_name, adv_model_names, model_type, train_data_dir, test_data_dir):
+def main(model_name, model_type, train_data_dir, test_data_dir):
     np.random.seed(0)
     assert keras.backend.backend() == "tensorflow"
     set_gtsrb_flags()
@@ -80,20 +82,21 @@ def main(model_name, adv_model_names, model_type, train_data_dir, test_data_dir)
     flags.DEFINE_bool('NUM_EPOCHS', args.epochs, 'Number of epochs')
 
     # Get GTSRB test data
-    X_train, Y_train, X_test, Y_test = load_data(train_data_dir, test_data_dir)
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = load_data(train_data_dir, test_data_dir)
 
     # One-hot encode image labels
     label_binarizer = LabelBinarizer()
     Y_train = label_binarizer.fit_transform(Y_train)
     Y_test = label_binarizer.fit_transform(Y_test)
+    Y_val = label_binarizer.fit_transform(Y_val)
 
     # Initialize substitute training set reserved for adversary
-    X_sub = X_test[:300]
-    Y_sub = np.argmax(Y_test[:300], axis=1)
+    X_sub = X_test[:1000]
+    Y_sub = np.argmax(Y_test[:1000], axis=1)
 
     # Redefine test set as remaining samples unavailable to adversaries
-    X_test = X_test[300:]
-    Y_test = Y_test[300:]
+    X_test = X_test[1000:]
+    Y_test = Y_test[1000:]
 
     x = tf.placeholder(tf.float32, (None, 32, 32, 1))
 
@@ -106,7 +109,7 @@ def main(model_name, adv_model_names, model_type, train_data_dir, test_data_dir)
     prediction = model(x)
 
     train_sub_out = train_sub(K.get_session(), x, one_hot_y, prediction, X_sub, Y_sub, nb_classes=FLAGS.NUM_CLASSES,
-                              nb_epochs_s=args.epochs, batch_size=FLAGS.BATCH_SIZE, learning_rate=0.001, data_aug=7,
+                              nb_epochs_s=args.epochs, batch_size=FLAGS.BATCH_SIZE, learning_rate=0.001, data_aug=5,
                               lmbda=0.1, model_type=model_type)
     model_sub, preds_sub = train_sub_out
     eval_params = {
@@ -116,7 +119,7 @@ def main(model_name, adv_model_names, model_type, train_data_dir, test_data_dir)
     # Finally print the result!
     # test_error = tf_test_error_rate(model_sub, x, X_test, Y_test)
     accuracy = model_eval(K.get_session(), x, one_hot_y, preds_sub, X_test, Y_test, args=eval_params)
-    print('Test accuracy of substitute on legitimate samples: %.3f%%' % accuracy)
+    print('Test accuracy of substitute on legitimate samples: ' + str(accuracy))
 
     save_model(model_sub, model_name)
     json_string = model_sub.to_json()
@@ -142,4 +145,4 @@ if __name__ == '__main__':
                         help="FGS attack scale")
 
     args = parser.parse_args()
-    main(args.model, args.adv_models, args.type, train_data_dir, test_data_dir)
+    main(args.model, args.type, train_data_dir, test_data_dir)
