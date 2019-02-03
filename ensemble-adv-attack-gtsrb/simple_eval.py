@@ -19,18 +19,16 @@ FLAGS = flags.FLAGS
 def main(attack, src_model_name, target_model_names, data_train_dir, data_test_dir):
     np.random.seed(0)
     tf.set_random_seed(0)
-
-    # flags.DEFINE_integer('BATCH_SIZE', 32, 'Size of batches')
     set_gtsrb_flags()
 
-    # Get MNIST test data
-    _, _, X_test, Y_test = load_data(data_train_dir, data_test_dir)
+    # Get GTSRB test data
+    _, _, _, _, X_test, Y_test = load_data(data_train_dir, data_test_dir)
 
     # display_leg_sample(X_test)
 
     # One-hot encode image labels
-    # label_binarizer = LabelBinarizer()
-    # Y_test = label_binarizer.fit_transform(Y_test)
+    label_binarizer = LabelBinarizer()
+    Y_test = label_binarizer.fit_transform(Y_test)
 
     x = K.placeholder((None,
                        FLAGS.IMAGE_ROWS,
@@ -139,62 +137,71 @@ def main(attack, src_model_name, target_model_names, data_train_dir, data_test_d
 
         for i in range(args.steps):
             if i == 0:
-                eps_0 = (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_0)
-            elif i == 1:
-                eps_1 = (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_1)
-            elif i == 2:
-                eps_2 = (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_2)
-            elif i == 3:
-                eps_3 = (1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                        1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_3)
-            elif i == 4:
-                eps_4 = (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                 1.0 / len(sub_models))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_4)
-            elif i == 5:
-                eps_5 = (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                      1.0 / len(sub_models)))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_5)
-            elif i == 6:
-                eps_6 = (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                           1.0 / len(sub_models))))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_6)
+                eps_all[0] = (1.0 / len(sub_models)) * args.eps
+            else:
+                for j in range(i):
+                    pre_sum = 0.0
+                    pre_sum += eps_all[j]
+                    eps_all[i] = (args.eps - pre_sum) * (1.0/len(sub_models))
 
-            elif i == 7:
-                eps_7 = (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                1.0 / len(sub_models)))))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_7)
-            elif i == 8:
-                eps_8 = (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                     1.0 / len(sub_models))))))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_8)
-            elif i == 9:
-                eps_9 = (1 - (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                          1.0 / len(sub_models)))))))) * (
-                                1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_9)
-            elif i == 10:
-                eps_10 = (1 - (1 - (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                                1.0 / len(sub_models))))))))) * (
-                                 1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_10)
-            elif i == 11:
-                eps_11 = (1 - (1 - (1 - (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                                     1.0 / len(sub_models)))))))))) * (
-                                 1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_11)
+        # for i in range(args.steps):
+        #     if i == 0:
+        #         eps_0 = (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_0)
+        #     elif i == 1:
+        #         eps_1 = (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_1)
+        #     elif i == 2:
+        #         eps_2 = (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_2)
+        #     elif i == 3:
+        #         eps_3 = (1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                 1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_3)
+        #     elif i == 4:
+        #         eps_4 = (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                          1.0 / len(sub_models))) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_4)
+        #     elif i == 5:
+        #         eps_5 = (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                               1.0 / len(sub_models)))) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_5)
+        #     elif i == 6:
+        #         eps_6 = (1 - (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                                    1.0 / len(sub_models))))) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_6)
+        #
+        #     elif i == 7:
+        #         eps_7 = (1 - (1 - (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                                         1.0 / len(sub_models)))))) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_7)
+        #     elif i == 8:
+        #         eps_8 = (1 - (1 - (1 - (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                                              1.0 / len(sub_models))))))) * (1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_8)
+        #     elif i == 9:
+        #         eps_9 = (1 - (1 - (1 - (1 - (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                                                   1.0 / len(sub_models)))))))) * (
+        #                         1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_9)
+        #     elif i == 10:
+        #         eps_10 = (1 - (1 - (1 - (1 - (1 - (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                                                         1.0 / len(sub_models))))))))) * (
+        #                          1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_10)
+        #     elif i == 11:
+        #         eps_11 = (1 - (1 - (1 - (1 - (1 - (1 - (1 - (1 - (
+        #                 1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
+        #                                                              1.0 / len(sub_models)))))))))) * (
+        #                          1.0 / len(sub_models)) * args.eps
+        #         eps_all.append(eps_11)
 
         for j in range(args.steps):
             print('iterative step is :', j)
@@ -356,6 +363,7 @@ def main(attack, src_model_name, target_model_names, data_train_dir, data_test_d
     # save adversarial example specified by user
     # save_leg_adv_specified_by_user('results/rand_fgs_0.1_leg_adv_label_4/', X_test, X_adv, Y_test)
 
+
 if __name__ == "__main__":
     ROOT_PATH = "GTSRB"
     SAVE_PATH = "models_oldest"
@@ -373,7 +381,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("attack", help="name of attack",
-                        choices=["test", "fgs", "ifgs", "rand_fgs", "CW", "cascade_ensemble", "Stack_Paral","Iter_Casc"])
+                        choices=["test", "fgs", "ifgs", "rand_fgs", "CW", "cascade_ensemble", "Stack_Paral",
+                                 "Iter_Casc"])
     parser.add_argument("src_model", help="source model for attack")
     parser.add_argument('target_models', nargs='*',
                         help='path to target model(s)')
