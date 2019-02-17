@@ -22,6 +22,14 @@ python -m train_sub models/model_sub_7 --epochs=30  # Select cleverhans.utils_ke
 python -m train_sub models/model_sub_8 --epochs=30  # Select cleverhans.utils_keras cnn_model() as substitute
 
 ```
+
+Then, we can use (standard) Adversarial Training or Ensemble Adversarial Training (we train for either 6 or 12 epochs in the paper). With Ensemble Adversarial Training, we additionally augment the training data with adversarial examples crafted from external pre-trained models (models A, C and D here):
+
+```
+python -m train_adv models/modelA_adv --type=0 --epochs=12
+python -m train_adv models/modelA_ens models/modelA models/modelC models/modelD --type=0 --epochs=12
+```
+
 When you complete substite and black-box target model training, you can make a test to verify the accuracy of trained models.
 
 ```
