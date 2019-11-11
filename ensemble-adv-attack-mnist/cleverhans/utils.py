@@ -32,7 +32,7 @@ class _ArgsWrapper(object):
 
 class AccuracyReport(object):
     """
-    An object summarizing the accuracy results for experiments involving
+    An object summarizing the accuracy results_mnist for experiments involving
     training on clean examples or adversarial examples, then evaluating
     on clean or adversarial examples.
     """
@@ -283,21 +283,55 @@ def save_leg_adv_sample(save_dir, X_test, X_adv):
     print('Please check: %s ' % save_dir)
 
 
+# def save_leg_adv_specified_by_user(save_dir, X_test, X_adv, y_test):
+#     if os.path.exists(save_dir) is False:
+#         os.makedirs(save_dir)
+#
+#     for i in range(len(X_test[:200])):
+#         if np.argmax(y_test[i]) == 4 and i == 109:
+#             image_array_leg = X_test[i]
+#             image_array_leg = image_array_leg.reshape(28, 28)
+#             filename = save_dir + 'mnist_test_%d_label_4.jpg' % i
+#             scipy.misc.toimage(image_array_leg, cmin=0.0, cmax=1.0).save(filename)
+#
+#             image_array_adv = X_adv[i]
+#             image_array_adv = image_array_adv.reshape(28, 28)
+#             filename = save_dir + 'mnist_adv_%d_label_4.jpg' % i
+#             scipy.misc.toimage(image_array_adv, cmin=0.0, cmax=1.0).save(filename)
+#
+#     print('please check: %s ' % save_dir)
+
+
 def save_leg_adv_specified_by_user(save_dir, X_test, X_adv, y_test):
     if os.path.exists(save_dir) is False:
         os.makedirs(save_dir)
 
     for i in range(len(X_test[:200])):
-        if np.argmax(y_test[i]) == 4 and i == 109:
+        # if np.argmax(y_test[i]) == 5 and i == 79:
+        if np.argmax(y_test[i]) == 6 and i == 161:
             image_array_leg = X_test[i]
             image_array_leg = image_array_leg.reshape(28, 28)
-            filename = save_dir + 'mnist_test_%d_label_4.jpg' % i
+            filename = save_dir + 'usps_test_%d_label_6.jpg' % i
             scipy.misc.toimage(image_array_leg, cmin=0.0, cmax=1.0).save(filename)
 
             image_array_adv = X_adv[i]
             image_array_adv = image_array_adv.reshape(28, 28)
-            filename = save_dir + 'mnist_adv_%d_label_4.jpg' % i
+            filename = save_dir + 'usps_adv_%d_label_6.jpg' % i
             scipy.misc.toimage(image_array_adv, cmin=0.0, cmax=1.0).save(filename)
+
+    print('please check: %s ' % save_dir)
+
+
+def save_leg_specified_by_user(save_dir, X_test, y_test):
+    if os.path.exists(save_dir) is False:
+        os.makedirs(save_dir)
+
+    for i in range(len(X_test[:200])):
+        if np.argmax(y_test[i]) == 6 and i ==161:
+            image_array_leg = X_test[i]
+            image_array_leg = image_array_leg.reshape(28, 28)
+            filename = save_dir + 'usps_test_%d_label_6.jpg' % i
+            scipy.misc.toimage(image_array_leg, cmin=0.0, cmax=1.0).save(filename)
 
     print('please check: %s ' % save_dir)
 
