@@ -9,9 +9,9 @@ from attack_utils import gen_grad
 from tf_utils import tf_test_error_rate, batch_eval, tf_test_similarity
 from cleverhans.utils_mnist import data_mnist
 from os.path import basename
-from cleverhans.utils import display_leg_adv_sample, save_leg_adv_sample, save_leg_adv_specified_by_user
+from cleverhans.utils import display_leg_adv_sample, save_leg_adv_sample, save_leg_adv_specified_by_user, save_leg_specified_by_user
 from tensorflow.python.platform import flags
-
+from usps import load_usps_
 FLAGS = flags.FLAGS
 
 
@@ -30,6 +30,7 @@ def main(attack, src_model_name, target_model_names):
     y = K.placeholder((None, FLAGS.NUM_CLASSES))
 
     _, _, X_test, Y_test = data_mnist()
+    # X_test, Y_test = load_usps_()
 
     # source model for crafting adversarial examples
     src_model = load_model(src_model_name)
@@ -79,7 +80,6 @@ def main(attack, src_model_name, target_model_names):
     if attack == "CW":
         X_test = X_test[0:10]
         Y_test = Y_test[0:10]
-        # X_adv_1_2_3_1_2_3_1_2 = np.load('X_adv_1_2_3_1_2_3_1_2.npy')
         cli = CarliniLi(K.get_session(), src_model,
                         targeted=False, confidence=args.kappa, eps=args.eps)
 
@@ -111,24 +111,7 @@ def main(attack, src_model_name, target_model_names):
             sub_models[i] = load_model(sub_model_ens[i])
 
         adv_x = x
-        # for j in range(args.steps):
-        #     for i, m in enumerate(sub_models + [src_model]):
-        #
-        #         if i==0:
-        #             logits = m(adv_x)
-        #             gradient = gen_grad(adv_x, logits, y)
-        #             adv_x = symbolic_fgs(adv_x, gradient, eps=args.eps / args.steps, clipping=True)
-        #         if i==1:
-        #             for k in range(args.steps):
-        #                 logits = m(adv_x)
-        #                 gradient = gen_grad(adv_x, logits, y)
-        #                 adv_x = symbolic_fgs(adv_x, gradient, eps=args.eps / args.steps, clipping=True)
-        #         if i==2:
-        #             adv_x = adv_x + args.alpha * np.sign(np.random.randn(*x[0].shape))
-        #             logits = m(adv_x)
-        #             gradient = gen_grad(adv_x, logits, y)
-        #             adv_x = symbolic_fgs(adv_x, gradient, eps=eps_1/args.steps, clipping=True)
-
+      
         for i, m in enumerate(sub_models + [src_model]):
             for k in range(args.steps):
                 logits = m(adv_x)
@@ -141,7 +124,8 @@ def main(attack, src_model_name, target_model_names):
         #     0.0, 1.0)
         # args.eps = args.eps - args.alpha
 
-        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3)
+        # sub_model_ens = (sub_model_1, sub_model_2, sub_model_3)
+        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3, sub_model_4, sub_model_5)
         sub_models = [None] * len(sub_model_ens)
         for i in range(len(sub_model_ens)):
             sub_models[i] = load_model(sub_model_ens[i])
@@ -149,66 +133,16 @@ def main(attack, src_model_name, target_model_names):
         x_advs = [None] * len(sub_models)
         errs = [None] * len(sub_models)
         adv_x = x
-        eps_all = []
+        eps_all = [None] * args.steps
 
         for i in range(args.steps):
             if i == 0:
-                eps_0 = (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_0)
-            elif i == 1:
-                eps_1 = (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_1)
-            elif i == 2:
-                eps_2 = (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_2)
-            elif i == 3:
-                eps_3 = (1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                        1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_3)
-            elif i == 4:
-                eps_4 = (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                 1.0 / len(sub_models))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_4)
-            elif i == 5:
-                eps_5 = (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                      1.0 / len(sub_models)))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_5)
-            elif i == 6:
-                eps_6 = (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                           1.0 / len(sub_models))))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_6)
-
-            elif i == 7:
-                eps_7 = (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                1.0 / len(sub_models)))))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_7)
-            elif i == 8:
-                eps_8 = (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                     1.0 / len(sub_models))))))) * (1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_8)
-            elif i == 9:
-                eps_9 = (1 - (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                          1.0 / len(sub_models)))))))) * (
-                                1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_9)
-            elif i == 10:
-                eps_10 = (1 - (1 - (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                                1.0 / len(sub_models))))))))) * (
-                                 1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_10)
-            elif i == 11:
-                eps_11 = (1 - (1 - (1 - (1 - (1 - (1 - (1 - (1 - (
-                        1 - (1 - (1 - 1.0 / len(sub_models)) * (1.0 / len(sub_models))) * (1.0 / len(sub_models))) * (
-                                                                     1.0 / len(sub_models)))))))))) * (
-                                 1.0 / len(sub_models)) * args.eps
-                eps_all.append(eps_11)
+                eps_all[0] = (1.0 / len(sub_models)) * args.eps
+            else:
+                for j in range(i):
+                    pre_sum = 0.0
+                    pre_sum += eps_all[j]
+                    eps_all[i] = (args.eps - pre_sum) * (1.0/len(sub_models))
 
         for j in range(args.steps):
             print('iterative step is :', j)
@@ -246,16 +180,17 @@ def main(attack, src_model_name, target_model_names):
         print('success rate is: {:.3f}'.format(success_rate))
 
         X_adv = batch_eval([x, y], [adv_x], [X_test, Y_test])[0]
-        np.save('results/iter_casc_0.3_leg_adv/X_adv_Iter_Casc_0.3.npy', X_adv)
+        # np.save('results_mnist/iter_casc_0.1_leg_adv/X_adv_Iter_Casc_0.1.npy', X_adv)
 
         for (name, target_model) in zip(target_model_names, target_models):
             err = tf_test_error_rate(target_model, x, X_adv, Y_test)
             print '{}->{}: {:.3f}'.format(basename(src_model_name), basename(name), err)
 
-        save_leg_adv_sample('results/iter_casc_0.3_leg_adv/', X_test, X_adv)
+        # save_leg_adv_sample('results_mnist/iter_casc_0.1_leg_adv/', X_test, X_adv)
 
         # save adversarial example specified by user
-        save_leg_adv_specified_by_user('results/iter_casc_0.3_leg_adv_label_4/', X_test, X_adv, Y_test)
+        # save_leg_adv_specified_by_user('results_mnist/iter_casc_0.1_leg_adv_label_4/', X_test, X_adv, Y_test)
+        save_leg_adv_specified_by_user('results_mnist/Iter_Casc_0.1_leg_adv_label_6_5/', X_test, X_adv, Y_test)
         return
 
     if attack == "stack_paral":
@@ -264,7 +199,7 @@ def main(attack, src_model_name, target_model_names):
         #     0.0, 1.0)
         # eps -= args.alpha
 
-        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3)
+        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3, sub_model_4, sub_model_5)
         sub_models = [None] * len(sub_model_ens)
 
         for i in range(len(sub_model_ens)):
@@ -274,11 +209,22 @@ def main(attack, src_model_name, target_model_names):
         x_advs = [None] * len(sub_models)
         # print x_advs
 
+        eps_all = [None] * args.steps
+
+        for i in range(args.steps):
+            if i == 0:
+                eps_all[0] = (1.0 / len(sub_models)) * args.eps
+            else:
+                for j in range(i):
+                    pre_sum = 0.0
+                    pre_sum += eps_all[j]
+                    eps_all[i] = (args.eps - pre_sum) * (1.0 / len(sub_models))
+
         for i, m in enumerate(sub_models):
             # x = x + args.alpha * np.sign(np.random.randn(*x[0].shape))
             logits = m(x)
             gradient = gen_grad(x, logits, y)
-            adv_x = symbolic_fgs(x, gradient, eps=args.eps / 2, clipping=True)
+            adv_x = symbolic_fgs(x, gradient, eps=args.eps/3, clipping=True)
             x_advs[i] = adv_x
 
         # print x_advs
@@ -307,12 +253,12 @@ def main(attack, src_model_name, target_model_names):
             print '{}->{}: {:.3f}'.format(basename(src_model_name), basename(name), err)
 
         # save adversarial examples
-        np.save('results/stack_paral_0.3_leg_adv/X_adv_stack_paral_0.3.npy', X_adv)
+        # np.save('results_mnist/stack_paral_0.1_leg_adv/X_adv_stack_paral_0.1.npy', X_adv)
         # save_leg_adv_sample(X_test, X_adv)
-        save_leg_adv_sample('results/stack_paral_0.3_leg_adv/', X_test, X_adv)
+        # save_leg_adv_sample('results_mnist/stack_paral_0.3_leg_adv/', X_test, X_adv)
 
         # save adversarial example specified by user
-        save_leg_adv_specified_by_user('results/stack_paral_0.3_leg_adv_label_4/', X_test, X_adv, Y_test)
+        save_leg_adv_specified_by_user('results_mnist/stack_paral_0.1_leg_adv_label_6_5/', X_test, X_adv, Y_test)
 
         return
 
@@ -352,39 +298,7 @@ def main(attack, src_model_name, target_model_names):
         display_leg_adv_sample(X_test, X_adv)
         return
 
-    if attack == "cascade_ensemble_2":
-        X_test = np.clip(
-            X_test + args.alpha * np.sign(np.random.randn(*x)),
-            0.0, 1.0)
-        eps -= args.alpha
-
-        sub_model_ens = (sub_model_1, sub_model_2, sub_model_3)
-        sub_models = [None] * len(sub_model_ens)
-
-        for i in range(len(sub_model_ens)):
-            sub_models[i] = load_model(sub_model_ens[i])
-
-        x_advs = [([None] * len(sub_models)) for i in range(args.steps)]
-        # print x_advs
-
-        x_adv = x
-        for j in range(args.steps):
-            for i, m in enumerate(sub_models):
-                logits = m(x_adv)
-                gradient = gen_grad(x_adv, logits, y)
-                x_adv = symbolic_fgs(x_adv, gradient, eps=args.eps / args.steps, clipping=True)
-                x_advs[j][i] = x_adv
-
-        # print x_advs
-        adv_x_sum = x_advs[0][0]
-        for j in range(args.steps):
-            for i in range(len(sub_models)):
-                if j == 0 and i == 0: continue
-                adv_x_sum = adv_x_sum + x_advs[j][i]
-        adv_x_mean = adv_x_sum / (args.steps * len(sub_models))
-        preds = src_model(adv_x_mean)
-        grads = gen_grad(adv_x_mean, preds, y)
-        adv_x = symbolic_fgs(adv_x_mean, grads, eps=args.eps / args.steps, clipping=True)
+    
     # compute the adversarial examples and evaluate
     X_adv = batch_eval([x, y], [adv_x], [X_test, Y_test])[0]
     # np.save('Train-Stack-Paral-5-0.8.npy', X_adv)
@@ -404,12 +318,13 @@ def main(attack, src_model_name, target_model_names):
     # save_leg_adv_sample('results/rand_fgs_0.3_leg_adv/', X_test, X_adv)
 
     # save adversarial example specified by user
-    # save_leg_adv_specified_by_user('results/rand_fgs_0.1_leg_adv_label_4/', X_test, X_adv, Y_test)
+    save_leg_adv_specified_by_user('results_mnist/Iter_Casc_0.1_leg_adv_label_6_5/', X_test, X_adv, Y_test)
+    # save_leg_specified_by_user('results_mnist/label_6/', X_test, Y_test)
 
 
 if __name__ == "__main__":
     SAVE_PATH = "models"
-    RESULT_PATH = "results"
+    RESULT_PATH = "results_mnist"
     sub_model_1 = os.path.join(SAVE_PATH, "model_sub_1")
     sub_model_2 = os.path.join(SAVE_PATH, "model_sub_2")
     sub_model_3 = os.path.join(SAVE_PATH, "model_sub_3")
@@ -426,7 +341,7 @@ if __name__ == "__main__":
     parser.add_argument("src_model", help="source model for attack")
     parser.add_argument('target_models', nargs='*',
                         help='path to target model(s)')
-    parser.add_argument("--eps", type=float, default=0.3,
+    parser.add_argument("--eps", type=float, default=0.1,
                         help="FGS attack scale")
     parser.add_argument("--alpha", type=float, default=0.15,
                         help="RAND+FGSM random perturbation scale")
