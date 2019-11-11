@@ -1,8 +1,11 @@
 # Ensemble Adversarial Black-Box Attacks against Deep Learning Systems
 Deep learning (DL) models, e.g., state-of-the-art convolutional neural networks (CNNs), have been widely applied into security sensitivity tasks, such as face payment, security monitoring, automated driving, etc. Then their vulnerability analysis is an emergent topic, especially for black-box attacks, where adversaries do not know the model internal architectures or training parameters. In this paper, two types of ensemble based black-box attack strategies, selective cascade ensemble strategy (SCES) and stack parallel ensemble strategy (SPES), are proposed to explore the vulnerability of DL system and potential factors that contribute to the high-efficiency attacks are explored, SCES adopts a boosting structure of ensemble learning and SPES employs a bagging structure. Moreover, two pairwise and non-pairwise diversity measures are adopted to examine the relationship between the diversity in substitutes ensembles.
+
 In our paper, due to space reasons, some experimental results are not presented, we show these sections as follows:
-![image](https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/1.png)
-                                                        (a) USPS
+
+<img src="img/1.png" width = "500" height = "300" alt="USPS" align=center />
+
+
 ![image](https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/2.png)
                                                         (b) GTSRB
                                                         
