@@ -42,15 +42,6 @@ Fig. 6. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES wit
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image011.png" width = "300" height = "200"  align=center />
 (b) SPES
 Fig. 7. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on GTSRB. 
-
-<img src="img/1.png" width = "500" height = "300" alt="USPS" align=center />
-
-
-![image](https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/2.png)
-                                                       
-                                                        
-
-
-
+                                                     
 # Delving into Diversity in Substitute Ensembles and Transferability of Adversarial Examples
 Our part work has been appeared in "Delving into Diversity in Substitute Ensembles and Transferability of Adversarial Examples", which can be downloaded by: https://link.springer.com/chapter/10.1007/978-3-030-04182-3_16
