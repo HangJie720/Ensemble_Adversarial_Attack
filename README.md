@@ -36,9 +36,9 @@ Fig. 5. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES wit
 (a) SCES<br>
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image004.png" width = "300" height = "200"  align=left /><br>
 (b) SPES<br>
-Fig. 6. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on MNIST.  <br>
+Fig. 6. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on MNIST.<br>
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image010.png" width = "300" height = "200"  /><br>
-(a) SCES    <br> 
+(a) SCES<br> 
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image011.png" width = "300" height = "200"  /><br>
 (b) SPES<br>
 Fig. 7. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on GTSRB. 
