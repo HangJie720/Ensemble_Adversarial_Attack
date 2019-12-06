@@ -53,3 +53,13 @@ Fig. 7. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES wit
                                                      
 # Delving into Diversity in Substitute Ensembles and Transferability of Adversarial Examples
 Our part work has been appeared in "Delving into Diversity in Substitute Ensembles and Transferability of Adversarial Examples", which can be downloaded by: https://link.springer.com/chapter/10.1007/978-3-030-04182-3_16
+
+# Acknowledgement
+Participants:: LI-DATA Lab; Professor Yun Li, Ph.D, KeJi Han, Ph.D Candidate; Hui Chen, Master;
+Refering to the following projects:
+-[cleverhans](https://github.com/tensorflow/cleverhans)
+-[tensorflow](https://github.com/tensorflow/tensorflow)
+-[ensemble adversarial training](https://github.com/ftramer/ensemble-adv-training)
+-[Carlini & Wagner Attack](https://github.com/carlini/nn_robust_attacks)
+
+
