@@ -11,7 +11,7 @@ In our paper, due to limited space , some experimental results are not presented
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image008.png" width = "280px"  height="200px" alt="(c)GTSRB" >
 </div>
 
-Fig.1. Transfer rate of adversarial examples crafted by SCES and SPES under different perturbation magnitude α on (a)USPS, (b)MNIST and (c)GTSRB.
+Fig.1. Transfer rate of adversarial examples crafted by SCES and SPES under different perturbation magnitude α on (left)USPS, (center)MNIST and (right)GTSRB.
 
 (2) Fig. 2, 3, 4. demonstrates that our proposed ensemble-based black-box attack strategies are still aggressive to target classifier trained with adversarial training and ensemble adversarial training defense mechanism.
 
