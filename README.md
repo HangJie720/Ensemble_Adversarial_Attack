@@ -58,7 +58,8 @@ Our part work has been appeared in "Delving into Diversity in Substitute Ensembl
 
 # Acknowledgement
 Participants:: LI-DATA Lab; Professor Yun Li, Ph.D, KeJi Han, Ph.D Candidate; Hui Chen, Master;
-Refering to the following projects:
+
+Referencing to the following projects:
 - [cleverhans](https://github.com/tensorflow/cleverhans)
 
 - [tensorflow](https://github.com/tensorflow/tensorflow)
