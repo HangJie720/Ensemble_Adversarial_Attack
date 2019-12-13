@@ -19,19 +19,19 @@ Fig.1. Transfer rate of adversarial examples crafted by SCES and SPES under diff
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image016.png" width = "300" height="200px" alt="(a)Black-box model trained with adversarial training" > <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image017.png" width = "300"  height="200px" alt="(b)Black-box model trained with ensemble adversarial training" >
 </div>
 
-Fig.2. Defense performance of black-box model trained with (a)adversarial training and (b)ensemble adversarial training against different attacks on USPS.
+Fig.2. Defense performance of black-box model trained with (left)adversarial training and (right)ensemble adversarial training against different attacks on USPS.
 
 <div align="center">
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image002.png" width = "300" height="200px" alt="(a)Black-box model trained with adversarial training" > <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image005.png" width = "300"  height="200px" alt="(b)Black-box model trained with ensemble adversarial training" >
 </div>
 
-Fig.3. Defense performance of black-box model trained with adversarial training and ensemble adversarial training against different attacks on MNIST.  
+Fig.3. Defense performance of black-box model trained with (left)adversarial training and (right)ensemble adversarial training against different attacks on MNIST.  
 
 <div align="center">
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image009.png" width = "300" height="200px" alt="(a)Black-box model trained with adversarial training" > <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image012.png" width = "300"  height="200px" alt="(b)Black-box model trained with ensemble adversarial training" >
 </div>
 
-Fig.4. Defense performance of black-box model trained with adversarial training and ensemble adversarial training against different attacks on GTSRB.
+Fig.4. Defense performance of black-box model trained with (left)adversarial training and (right)ensemble adversarial training against different attacks on GTSRB.
 
 Transfer rate of adversarial examples crafted by SCES and SPES with k=1, 3 and 5 under different perturbation magnitude α in FGSM are shown in Fig.5., Fig.6. and Fig.7.  
 
@@ -39,19 +39,19 @@ Transfer rate of adversarial examples crafted by SCES and SPES with k=1, 3 and 5
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image003.png" width = "300" height="200px" alt="(a)SCES" > <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image014.png" width = "300"  height="200px" alt="(b)SPES" >
 </div>
 
-Fig.5. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on USPS.
+Fig.5. Transfer rate of adversarial examples crafted by (left)SCES and (right)SPES with k=1, 3 and 5 under different perturbation magnitude α on USPS.
 
 <div align="center">
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image015.png" width = "300" height="200px" alt="(a)SCES" > <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image004.png" width = "300"  height="200px" alt="(b)SPES" >
 </div>
 
-Fig.6. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on MNIST.
+Fig.6. Transfer rate of adversarial examples crafted by (left)SCES and (right)SPES with k=1, 3 and 5 under different perturbation magnitude α on MNIST.
 
 <div align="center">
 <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image010.png" width = "300" height="200px" alt="(a)SCES" > <img src="https://github.com/HangJie720/Ensemble_Adversarial_Attack/blob/master/img/image011.png" width = "300"  height="200px" alt="(b)SPES" >
 </div>
 
-Fig. 7. Transfer rate of adversarial examples crafted by (a)SCES and (b)SPES with k=1, 3 and 5 under different perturbation magnitude α on GTSRB. 
+Fig. 7. Transfer rate of adversarial examples crafted by (left)SCES and (right)SPES with k=1, 3 and 5 under different perturbation magnitude α on GTSRB. 
                                                      
 # Delving into Diversity in Substitute Ensembles and Transferability of Adversarial Examples
 Our part work has been appeared in "Delving into Diversity in Substitute Ensembles and Transferability of Adversarial Examples", which can be downloaded by: https://link.springer.com/chapter/10.1007/978-3-030-04182-3_16
