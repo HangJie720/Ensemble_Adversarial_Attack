@@ -64,7 +64,6 @@ Our part work has been appeared in "Delving into Diversity in Substitute Ensembl
 ## Acknowledgement
 Participants:: LI-DATA Lab; Professor Yun Li, Ph.D, KeJi Han, Ph.D Candidate; Hui Chen, Master;
 
-## Reference
 Referencing to the following projects:
 - [cleverhans](https://github.com/tensorflow/cleverhans)
 
@@ -74,6 +73,7 @@ Referencing to the following projects:
 
 - [Carlini & Wagner Attack](https://github.com/carlini/nn_robust_attacks)
 
+## Reference
 1. Babaee M., Dinh D T., Rigoll G.: A deep convolutional neural network for video sequence background subtraction. Pattern Recognition, 76:635–649, 2018. 2. Schroff, F., Kalenichenko, D., Philbin J.: FaceNet: A unified embedding for face recognition and clustering. In: The 2015 IEEE Conference on Computer Vision and Pattern Recognition(CVPR), pp:815-823. IEEE Press, New York, 2015.
 
 3. Chu W., Li W W.: Manga face detection based on deep neural networks fusing global and local information. Pattern Recognition, 86:62–72, 2019.
