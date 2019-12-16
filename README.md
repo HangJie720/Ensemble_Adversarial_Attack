@@ -80,33 +80,15 @@ Referencing to the following projects:
 
 4. Wang Q., Fan HJ., Sun G., Cong Y., &Tang YD.: Laplacian pyramid adversarial network for face completion. Pattern Recognition, 88:493-505, 2019.
 
-5. Biggio B., Roli F.: Wild Patterns: Ten years after the rise of adversarial machine learning.
-
-Pattern Recognition, 84:317–331, 2018.
+5. Biggio B., Roli F.: Wild Patterns: Ten years after the rise of adversarial machine learning. Pattern Recognition, 84:317–331, 2018.
 
 6. Evtimov, I., Eykholt, K., Fernandes, E.: Robust physical-world attacks on deep learning visual classification. In: The 2018 IEEE Conference on Computer Vision and Pattern Recognition(CVPR), pp:1625-1634. IEEE Press, New York, 2018.
 
-7. Sharif, M., Bhagavatula, S., Bauer, L., Michael, K.R.: Accessorize to a crime: Real and
+7. Sharif, M., Bhagavatula, S., Bauer, L., Michael, K.R.: Accessorize to a crime: Real and stealthy attacks on state-of-the-art face recognition. In: 2016 ACM SIGSAC Conference on Computer and Communications Security(CCS), pp: 1528-1540. ACM, New York, 2016.
 
-stealthy attacks on state-of-the-art face recognition. In: 2016 ACM SIGSAC Conference on
+8. Grosse, K., Papernot, N., Manoharan, P., Backes, Michael., McDaniel, P.: Adversarial examples for malware detection. In: The 2017 European Symposium on Research in Computer Security(ESORICS), pp: 62-79. Springer, Heidelberg , 2017.
 
-Computer and Communications Security(CCS), pp: 1528-1540.
-
-ACM, New York, 2016.
-
-8.
-
-Grosse, K., Papernot, N., Manoharan, P., Backes, Michael., McDaniel, P.: Adversarial ex-
-
-amples for malware detection. In: The 2017 European Symposium on Research in Computer
-
-Security(ESORICS), pp: 62-79.
-
-Springer, Heidelberg , 2017.
-
-9. Szegedy, C., Zaremba, W., Sutskever, I., Bruna, J., Erhan, D., Goodfellow, I., Fergus, R.:
-
-Intriguing properties of neural networks. In: The 2nd International Conference on Learning Representations (ICLR), 2014.
+9. Szegedy, C., Zaremba, W., Sutskever, I., Bruna, J., Erhan, D., Goodfellow, I., Fergus, R.: Intriguing properties of neural networks. In: The 2nd International Conference on Learning Representations (ICLR), 2014.
 
 10. Papernot, N., McDaniel, P.: Transferability in machine learning: from phenomena to blackbox attacks using adversarial samples. arXiv:1605.07277, 2016.
 
@@ -116,9 +98,7 @@ Intriguing properties of neural networks. In: The 2nd International Conference o
 
 13. Papernot, N., Mcdaniel, P., Sinha, A., Wellman, M.: Towards the science of security and privacy in machine learning. arXiv preprint arXiv:1611.03814, 2016.
 
-14. Meng, D.Y., Chen, H.: MagNet: a Two-pronged Defense against Adversarial Examples. In:
-
-ACM SIGSAC Conference on Computer and Communications Security(CCS), pp: 135-147. ACM, New York, 2017.
+14. Meng, D.Y., Chen, H.: MagNet: a Two-pronged Defense against Adversarial Examples. In: ACM SIGSAC Conference on Computer and Communications Security(CCS), pp: 135-147. ACM, New York, 2017.
 
 15. Wang, Q.L., Guo, W.B., Zhang, K.X., Ororbia Ii, A. G., Xing, X., Liu, X.: Adversary resistant deep neural networks with an application to malware detection. In: The 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining(KDD), pp: 1145-1153. ACM, New York, 2017.
 
@@ -126,23 +106,17 @@ ACM SIGSAC Conference on Computer and Communications Security(CCS), pp: 135-147.
 
 17. Tramèr, F., Kurakin, A., Papernot, N., Boneh, D., McDaniel, P.: Ensemble adversarial training: Attacks and defenses. In: The 6th International Conference on Learning Representations (ICLR), 2018.
 
-18. Goodfellow, I., Shlens, J., Szegedy, C.: Explaining and harnessing adversarial examples. In:
-
-The 3rd International Conference on Learning Representations (ICLR), 2015.
+18. Goodfellow, I., Shlens, J., Szegedy, C.: Explaining and harnessing adversarial examples. In: The 3rd International Conference on Learning Representations (ICLR), 2015.
 
 19. Kurakin, A., Goodfellow, I., Bengio, S.: Adversarial machine learning at scale. In: The 5th International Conference on Learning Representations (ICLR), 2017.
 
 20. Hang, J., Han, K.J., Li, Y.: Delving into diversity in substitute ensembles and transferability of adversarial examples. In: The 25th International Conference on Neural Information Processing(ICONIP), pp: 175-187. Spring, Heidelberg, 2018. 21. Madry, A., Makelov, A., Schmidt, L., Tsipras, D., Vladu, A.: Towards deep learning models resistant to adversarial attacks. In: The 6th International Conference on Learning Representations (ICLR), 2018.
 
-22. Kurakin, K., Goodfellow, J., Bengio, S.: Adversarial examples in the physical world. In:
-
-The 5th International Conference on Learning Representations (ICLR), 2017.
+22. Kurakin, K., Goodfellow, J., Bengio, S.: Adversarial examples in the physical world. In: The 5th International Conference on Learning Representations (ICLR), 2017.
 
 23. Shaham U., Yamada Y., Negahban S.: Understanding adversarial training: Increasing local stability of neural nets through robust optimization. Neurocomputing, vol. 307: 195-204, 2018
 
-24. Athalye, A., Carlini, N., Wagner, D.: Obfuscated gradients give a false sense of security:
-
-Circumventing defenses to adversarial examples. In: The 6th International Conference on Learning Representations (ICLR), 2018.tutorial
+24. Athalye, A., Carlini, N., Wagner, D.: Obfuscated gradients give a false sense of security: Circumventing defenses to adversarial examples. In: The 6th International Conference on Learning Representations (ICLR), 2018.tutorial
 
 25. Sinha, A., Namkoong, H., Duchi, J.: Certifying some distributional robustness with principled adversarial training. In: The 6th International Conference on Learning Representations (ICLR), 2018.
 
