@@ -74,7 +74,8 @@ Referencing to the following projects:
 - [Carlini & Wagner Attack](https://github.com/carlini/nn_robust_attacks)
 
 ## Reference
-1. Babaee M., Dinh D T., Rigoll G.: A deep convolutional neural network for video sequence background subtraction. Pattern Recognition, 76:635–649, 2018. 2. Schroff, F., Kalenichenko, D., Philbin J.: FaceNet: A unified embedding for face recognition and clustering. In: The 2015 IEEE Conference on Computer Vision and Pattern Recognition(CVPR), pp:815-823. IEEE Press, New York, 2015.
+1. Babaee M., Dinh D T., Rigoll G.: A deep convolutional neural network for video sequence background subtraction. Pattern Recognition, 76:635–649, 2018. 
+2. Schroff, F., Kalenichenko, D., Philbin J.: FaceNet: A unified embedding for face recognition and clustering. In: The 2015 IEEE Conference on Computer Vision and Pattern Recognition(CVPR), pp:815-823. IEEE Press, New York, 2015.
 
 3. Chu W., Li W W.: Manga face detection based on deep neural networks fusing global and local information. Pattern Recognition, 86:62–72, 2019.
 
@@ -110,7 +111,9 @@ Referencing to the following projects:
 
 19. Kurakin, A., Goodfellow, I., Bengio, S.: Adversarial machine learning at scale. In: The 5th International Conference on Learning Representations (ICLR), 2017.
 
-20. Hang, J., Han, K.J., Li, Y.: Delving into diversity in substitute ensembles and transferability of adversarial examples. In: The 25th International Conference on Neural Information Processing(ICONIP), pp: 175-187. Spring, Heidelberg, 2018. 21. Madry, A., Makelov, A., Schmidt, L., Tsipras, D., Vladu, A.: Towards deep learning models resistant to adversarial attacks. In: The 6th International Conference on Learning Representations (ICLR), 2018.
+20. Hang, J., Han, K.J., Li, Y.: Delving into diversity in substitute ensembles and transferability of adversarial examples. In: The 25th International Conference on Neural Information Processing(ICONIP), pp: 175-187. Spring, Heidelberg, 2018. 
+
+21. Madry, A., Makelov, A., Schmidt, L., Tsipras, D., Vladu, A.: Towards deep learning models resistant to adversarial attacks. In: The 6th International Conference on Learning Representations (ICLR), 2018.
 
 22. Kurakin, K., Goodfellow, J., Bengio, S.: Adversarial examples in the physical world. In: The 5th International Conference on Learning Representations (ICLR), 2017.
 
